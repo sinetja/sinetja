@@ -22,9 +22,9 @@ class NotFoundAction extends Action {
 object Example {
   def main(args: Array[String]) {
     (new Server)
-      .get("/",            classOf[IndexAction])
-      .get("/hello/:name", classOf[HelloAction])
-      .notFound(classOf[NotFoundAction])
+      .GET("/",            classOf[IndexAction])
+      .GET("/hello/:name", classOf[HelloAction])
+      .handler404(classOf[NotFoundAction])
       .start(8000)
   }
 }

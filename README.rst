@@ -31,9 +31,9 @@ Example
   public App {
     public static void main(String[] args) {
       new Server()
-        .get("/",            IndexAction.class)
-        .get("/hello/:name", HelloAction.class)
-        .notFound(NotFoundAction.class)
+        .GET("/",            IndexAction.class)
+        .GET("/hello/:name", HelloAction.class)
+        .handler404(NotFoundAction.class)
         .start(8000);
     }
   }

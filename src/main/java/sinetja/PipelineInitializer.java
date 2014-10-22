@@ -18,7 +18,7 @@ class PipelineInitializer extends ChannelInitializer<SocketChannel> {
   public void initChannel(SocketChannel ch) {
     ChannelPipeline p = ch.pipeline();
     p.addLast(new HttpRequestDecoder());
-    p.addLast(new HttpObjectAggregator(server.maxContentLength));
+    p.addLast(new HttpObjectAggregator(server.maxContentLength()));
     p.addLast(new HttpResponseEncoder());
     p.addLast(server.name(), server);
     p.addLast(badClientSilencer);
