@@ -15,7 +15,8 @@ public class Server extends Router {
   //----------------------------------------------------------------------------
   // Config
 
-  public int maxContentLength = MAX_CONTENT_LENGTH;
+  public int     maxContentLength = MAX_CONTENT_LENGTH;
+  public boolean openSSL          = false;
 
   //----------------------------------------------------------------------------
   // Route helpers
@@ -94,5 +95,9 @@ public class Server extends Router {
       bossGroup.shutdownGracefully();
       workerGroup.shutdownGracefully();
     }
+  }
+
+  public void start(int port, String certChainFile, String keyFile) {
+
   }
 }

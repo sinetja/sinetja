@@ -1,5 +1,8 @@
 package sinetja;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
@@ -43,8 +46,9 @@ public abstract class Action extends SimpleChannelInboundHandler<Routed> {
   protected Charset charset = CharsetUtil.UTF_8;
 
   protected Channel channel;
-
-  protected Routed routed;
+  protected String  clientIp;
+  protected String  remoteIp;
+  protected Routed  routed;
 
   /**
    * Will be released after method <code>execute</code> is run. If you want to
@@ -66,13 +70,28 @@ public abstract class Action extends SimpleChannelInboundHandler<Routed> {
 
   @Override
   protected void channelRead0(ChannelHandlerContext ctx, Routed routed) {
+    this.routed = routed;
+    channel     = ctx.channel();
+    request     = (FullHttpRequest) routed.request();
+
     try {
-      this.routed = routed;
-      channel     = ctx.channel();
-      request     = (FullHttpRequest) routed.request();
+      // Log time taken to process the request
+      long beginNano = System.nanoTime();
 
-      Log.info("{} {}", request.getMethod(), request.getUri());
+      // Get client IP while the client is still connected; Netty may not allow
+      // us to get this info later when the connection may be closed
+      clientIp = getClientIpFromChannel();
+      remoteIp = getRemoteIpFromClientIpOrReverseProxy();
 
+      // Parse body params
+      String contentTye = request.headers().get(HttpHeaders.Names.CONTENT_TYPE);
+      if (HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED.equals(contentTye)) {
+        String             content = request.content().toString(charset);
+        QueryStringDecoder qsd     = new QueryStringDecoder("?" + content);
+        bodyParams                 = qsd.parameters();
+      }
+
+      // Create default response
       response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
 
       // Release request and response when the connection is closed, just in case
@@ -84,22 +103,52 @@ public abstract class Action extends SimpleChannelInboundHandler<Routed> {
         }
       });
 
-      String contentTye = request.headers().get(HttpHeaders.Names.CONTENT_TYPE);
-      if (HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED.equals(contentTye)) {
-        String             content = request.content().toString(charset);
-        QueryStringDecoder qsd     = new QueryStringDecoder("?" + content);
-        bodyParams                 = qsd.parameters();
-      }
-
+      // Call execute after all the preparation
       execute();
+
+      // Access log; the action can be async
+      long endNano = System.nanoTime();
+      long dt      = endNano - beginNano;
+      if (dt >= 1000000L) {
+        Log.info("[{}] {} {} - {} [ms]", remoteIp, request.getMethod(), request.getUri(), dt / 1000000L);
+      } else if (dt >= 1000) {
+        Log.info("[{}] {} {} - {} [us]", remoteIp, request.getMethod(), request.getUri(), dt / 1000);
+      } else {
+        Log.info("[{}] {} {} - {} [ns]", remoteIp, request.getMethod(), request.getUri(), dt);
+      }
     } catch (MissingParam e) {
       response.setStatus(HttpResponseStatus.BAD_REQUEST);
       respondMissingParam(e);
     } catch (Exception e) {
-      Log.error("Server error: {}", e);
+      Log.error("Server error: {}\nWhen processing request: {}", e, request);
       response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
       respondServerError(e);
     }
+  }
+
+  //----------------------------------------------------------------------------
+
+  /** @return IP of the direct HTTP client (may be the proxy) */
+  protected String clientIp() {
+    return clientIp;
+  }
+
+  protected String remoteIp() {
+    return remoteIp;
+  }
+
+  private String getClientIpFromChannel() {
+    SocketAddress remoteAddress = channel.remoteAddress();
+
+    // TODO: inetSocketAddress can be Inet4Address or Inet6Address
+    // See java.net.preferIPv6Addresses
+    InetSocketAddress inetSocketAddress = (InetSocketAddress) remoteAddress;
+    InetAddress       addr              = inetSocketAddress.getAddress();
+    return addr.getHostAddress();
+  }
+
+  private String getRemoteIpFromClientIpOrReverseProxy() {
+    return clientIp;  // FIXME
   }
 
   //----------------------------------------------------------------------------
