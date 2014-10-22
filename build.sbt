@@ -27,4 +27,4 @@ libraryDependencies += "io.netty" % "netty-all" % "4.0.23.Final"
 // Netty speed can be boosted by Javassist
 libraryDependencies += "org.javassist" % "javassist" % "3.18.2-GA"
 
-libraryDependencies += "tv.cntt" % "netty-router" % "1.1"
+libraryDependencies += "tv.cntt" % "netty-router" % "1.2"
