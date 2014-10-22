@@ -1,5 +1,7 @@
 package sinetja
 
+import io.netty.handler.codec.http.HttpResponseStatus
+
 class IndexAction extends Action {
   def execute() {
     respondText("Hello Sinetja")
@@ -15,6 +17,7 @@ class HelloAction extends Action {
 
 class NotFoundAction extends Action {
   def execute() {
+    response.setStatus(HttpResponseStatus.NOT_FOUND)
     respondText("404 Not Found: " + request.getUri)
   }
 }

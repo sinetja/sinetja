@@ -7,6 +7,8 @@ Example
 
   package sinetja;
 
+  import io.netty.handler.codec.http.HttpResponseStatus;
+
   public class IndexAction extends Action {
     public void execute() {
       respondText("Hello Sinetja");
@@ -24,6 +26,7 @@ Example
     public void execute() {
       String uri = request.getUri();
       log.info("User tried to access nonexistant path: {}", uri);
+      response.setStatus(HttpResponseStatus.NOT_FOUND);
       respondText("404 Not Found: " + uri);
     }
   }
