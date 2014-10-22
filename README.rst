@@ -78,3 +78,8 @@ Respond
 
   ChannelFuture respondText(Object text)
   ChannelFuture respondText(ByteBuf buf)
+
+Reverse routing
+~~~~~~~~~~~~~~~
+
+TODO
