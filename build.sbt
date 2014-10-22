@@ -19,12 +19,12 @@ javacOptions in (Compile, doc) := Seq("-source", "1.5")
 
 //------------------------------------------------------------------------------
 
-libraryDependencies += "tv.cntt" % "jauter" % "1.2"
+// Projects using Sinetja must provide a concrete implementation of SLF4J (Logback etc.)
+libraryDependencies += "org.slf4s" %% "slf4s-api" % "1.7.7"
 
 libraryDependencies += "io.netty" % "netty-all" % "4.0.23.Final"
 
 // Netty speed can be boosted by Javassist
 libraryDependencies += "org.javassist" % "javassist" % "3.18.2-GA"
 
-// Projects using Sinetja must provide a concrete implementation of SLF4J (Logback etc.)
-libraryDependencies += "org.slf4s" %% "slf4s-api" % "1.7.7"
+libraryDependencies += "tv.cntt" % "netty-router" % "1.1"
