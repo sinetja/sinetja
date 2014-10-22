@@ -1,6 +1,4 @@
-package sinetja;
-
-import io.netty.handler.codec.http.HttpMethod
+package sinetja
 
 class IndexAction extends Action {
   def execute() {
@@ -8,9 +6,25 @@ class IndexAction extends Action {
   }
 }
 
+class HelloAction extends Action {
+  def execute() {
+    val name = param("name")
+    respondText(s"Hello $name")
+  }
+}
+
+class NotFoundAction extends Action {
+  def execute() {
+    respondText("404 Not Found: " + request.getUri)
+  }
+}
+
 object Example {
   def main(args: Array[String]) {
-    Server.router().pattern(HttpMethod.GET, "/", classOf[IndexAction])
-    Server.start(8000)
+    (new Server)
+      .get("/",            classOf[IndexAction])
+      .get("/hello/:name", classOf[HelloAction])
+      .notFound(classOf[NotFoundAction])
+      .start(8000)
   }
 }
