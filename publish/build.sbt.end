@@ -18,17 +18,17 @@ publishArtifact in Test := false
 pomIncludeRepository := { _ => false }
 
 pomExtra := (
-  <url>https://github.com/xitrum-framework/sinetja</url>
+  <url>https://github.com/sinetja/sinetja</url>
   <licenses>
     <license>
       <name>MIT</name>
-      <url>https://github.com/xitrum-framework/sinetja/blob/master/MIT-LICENSE</url>
+      <url>https://github.com/sinetja/sinetja/blob/master/MIT-LICENSE</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
   <scm>
-    <url>git@github.com:xitrum-framework/sinetja.git</url>
-    <connection>scm:git:git@github.com:xitrum-framework/sinetja.git</connection>
+    <url>git@github.com:sinetja/sinetja.git</url>
+    <connection>scm:git:git@github.com:sinetja/sinetja.git</connection>
   </scm>
   <developers>
     <developer>

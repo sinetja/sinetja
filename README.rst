@@ -100,4 +100,4 @@ Use with Maven
 Together with Netty, Sinetja also adds `Javassist <http://javassist.org/>`_ as
 a dependency, because it boosts Netty speed.
 
-Sinetja uses `netty-router <https://github.com/xitrum-framework/netty-router>`_.
+Sinetja uses `netty-router <https://github.com/sinetja/netty-router>`_.
