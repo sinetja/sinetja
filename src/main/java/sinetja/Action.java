@@ -92,7 +92,10 @@ public abstract class Action extends SimpleChannelInboundHandler<Routed> {
       }
 
       // Create default response
-      response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+      response = new DefaultFullHttpResponse(
+        HttpVersion.HTTP_1_1,
+        routed.notFound404() ? HttpResponseStatus.NOT_FOUND : HttpResponseStatus.OK
+      );
 
       // Release request and response when the connection is closed, just in case
       channel.closeFuture().addListener(new ChannelFutureListener() {
