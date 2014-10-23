@@ -5,7 +5,7 @@ Example
 
 ::
 
-  package sinetja;
+  import sinetja.Server;
 
   public class IndexAction extends Action {
     public void execute() {
