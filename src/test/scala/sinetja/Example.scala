@@ -1,26 +1,26 @@
 package sinetja
 
 class IndexAction extends Action {
-  def execute() {
-    respondText("Hello Sinetja")
+  def run(req: Request, res: Response) {
+    res.respondText("Hello Sinetja")
   }
 }
 
 class HelloAction extends Action {
-  def execute() {
-    val name = param("name")
-    respondText(s"Hello $name")
+  def run(req: Request, res: Response) {
+    val name = req.param("name")
+    res.respondText(s"Hello $name")
   }
 }
 
 class NotFoundAction extends Action {
-  def execute() {
+  def run(req: Request, res: Response) {
     // Demo about log
-    val uri = request.getUri()
-    log.info("User tried to access nonexistant path: {}", uri)
+    val uri = req.getUri()
+    Log.info("User tried to access nonexistant path: {}", uri)
 
     // Response status has already been set to 404 Not Found by Sinetja
-    respondText("404 Not Found: " + request.getUri)
+    res.respondText("Not Found: " + uri)
   }
 }
 
@@ -29,7 +29,7 @@ object Example {
     (new Server)
       .GET("/",            classOf[IndexAction])
       .GET("/hello/:name", classOf[HelloAction])
-      .handler404(classOf[NotFoundAction])
+      .NOT_FOUND(classOf[NotFoundAction])
       .start(8000)
   }
 }

@@ -16,12 +16,12 @@ Java 8 provides convenient lambda syntax:
       new Server()
 
       .GET("/", (req, res) ->
-        res.respond("Hello world");
+        res.respondText("Hello world");
       )
 
       .GET("/hello/:name", (req, res) ->
         String name = req.param("name");
-        res.respond("Hello " + name);
+        res.respondText("Hello " + name);
       )
 
       .start(8000);
@@ -46,14 +46,14 @@ This style is just a verbose version of Java 8.
 
       .GET("/", new Action() {
         public void run(Request req, Response res) {
-          res.respond("Hello world");
+          res.respondText("Hello world");
         }
       )
 
       .GET("/hello/:name", new Action() {
         public void run(Request req, Response res) {
           String name = req.param("name");
-          res.respond("Hello " + name);
+          res.respondText("Hello " + name);
         }
       )
 
@@ -79,14 +79,14 @@ web pages with URL links among them.
 
   public class IndexAction extends Action {
     public void run(Request req, Response res) {
-      req.respond("Hello Sinetja");
+      req.respondText("Hello Sinetja");
     }
   }
 
   public class HelloAction extends Action {
     public void run(Request req, Response res) {
       String name = req.param("name");
-      res.respond("Hello " + name");
+      res.respondText("Hello " + name");
     }
   }
 
@@ -132,8 +132,8 @@ Respond
 
 ::
 
-  ChannelFuture respond(Object  text)
-  ChannelFuture respond(ByteBuf buf)
+  ChannelFuture respondText(Object  text)
+  ChannelFuture respondText(ByteBuf buf)
 
 Log
 ~~~
@@ -149,8 +149,8 @@ Please add an implementation like `Logback <http://logback.qos.ch/>`_ to your pr
 404 Not Found
 ~~~~~~~~~~~~~
 
-If there's no matched action, Sinetjy automatically respond simple "404 Not Found"
-text for you.
+If there's no matched action, Sinetjy will automatically respond simple
+"Not Found" text for you.
 
 If you want to handle yourself (response status has already been set to 404,
 you don't have to set it yourself):
@@ -159,21 +159,21 @@ Java 8 style:
 
 ::
 
-  server.handler404((req, res) ->
+  server.NOT_FOUND((req, res) ->
     String uri = req.getUri();
     Log.info("User tried to access nonexistant path: {}", uri);
-    res.respond("404 Not Found: " + uri);
+    res.respondText("Not Found: " + uri);
   );
 
 Older Java style:
 
 ::
 
-  server.handler404(new Action() {
+  server.NOT_FOUND(new Action() {
     public void run(Request req, Response res) {
       String uri = req.getUri();
       Log.info("User tried to access nonexistant path: {}", uri);
-      res.respond("404 Not Found: " + uri);
+      res.respondText("Not Found: " + uri);
     }
   );
 
@@ -185,11 +185,56 @@ Class style:
     public void run() {
       String uri = request.getUri();
       Log.info("User tried to access nonexistant path: {}", uri);
-      res.respond("404 Not Found: " + uri);
+      res.respondText("Not Found: " + uri);
     }
   }
 
-  server.handler404(NotFoundAction.class);
+  server.NOT_FOUND(NotFoundAction.class);
+
+500 Internal Server Error
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If there's no error handler, Sinetjy will automatically respond simple
+"Internal Server Error" text for you.
+
+If you want to handle yourself (response status has already been set to 500,
+you don't have to set it yourself):
+
+Java 8 style:
+
+::
+
+  server.ERROR((req, res, e) ->
+    String uri = req.getUri();
+    Log.error("Error when user tried to access path: {}", e);
+    res.respondText("Internal Server Error: " + uri);
+  );
+
+Older Java style:
+
+::
+
+  server.ERROR(new Action() {
+    public void run(Request req, Response res) {
+      String uri = req.getUri();
+      Log.error("Error when user tried to access path: " + uri, e);
+      res.respondText("Internal Server Error: " + uri);
+    }
+  );
+
+Class style:
+
+::
+
+  public class ErrorHandler extends ErrorHandler {
+    public void run() {
+      String uri = req.getUri();
+      Log.error("Error when user tried to access path: " + uri, e);
+      res.respondText("Internal Server Error: " + uri);
+    }
+  }
+
+  server.ERROR(ErrorHandler.class);
 
 HTTPS
 ~~~~~

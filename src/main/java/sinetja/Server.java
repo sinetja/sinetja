@@ -1,28 +1,18 @@
 package sinetja;
 
-import jauter.Router;
+import io.netty.handler.codec.http.router.MethodRouter;
 
 import java.nio.charset.Charset;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
-import io.netty.channel.ChannelInboundHandler;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.HttpMethod;
 import io.netty.util.CharsetUtil;
 
-public class Server extends Router<HttpMethod, Action> {
-  protected HttpMethod CONNECT() { return HttpMethod.CONNECT; }
-  protected HttpMethod DELETE()  { return HttpMethod.DELETE ; }
-  protected HttpMethod GET()     { return HttpMethod.GET    ; }
-  protected HttpMethod HEAD()    { return HttpMethod.HEAD   ; }
-  protected HttpMethod OPTIONS() { return HttpMethod.OPTIONS; }
-  protected HttpMethod PATCH()   { return HttpMethod.PATCH  ; }
-  protected HttpMethod POST()    { return HttpMethod.POST   ; }
-  protected HttpMethod PUT()     { return HttpMethod.PUT    ; }
-  protected HttpMethod TRACE()   { return HttpMethod.TRACE  ; }
+public class Server extends MethodRouter<Object, Server> {
+  @Override protected Server getThis() { return this; }
 
   //----------------------------------------------------------------------------
 
@@ -33,13 +23,15 @@ public class Server extends Router<HttpMethod, Action> {
   // Config
 
   /** Default: false */
-  protected boolean openSsl = false;
+  private boolean openSsl = false;
 
   /** Default: MAX_CONTENT_LENGTH */
-  protected int maxContentLength = MAX_CONTENT_LENGTH;
+  private int maxContentLength = MAX_CONTENT_LENGTH;
 
   /** Default: UTF-8. */
-  protected Charset charset = CharsetUtil.UTF_8;
+  private Charset charset = CharsetUtil.UTF_8;
+
+  private Object errorHandler;
 
   //----------------------------------------------------------------------------
 
@@ -49,7 +41,7 @@ public class Server extends Router<HttpMethod, Action> {
 
   public Server openSsl(boolean openSsl) {
     this.openSsl = openSsl;
-    return this;
+    return getThis();
   }
 
   public int maxContentLength() {
@@ -58,7 +50,30 @@ public class Server extends Router<HttpMethod, Action> {
 
   public Server maxContentLength(int maxContentLength) {
     this.maxContentLength = maxContentLength;
-    return this;
+    return getThis();
+  }
+
+  public Charset charset() {
+    return charset;
+  }
+
+  public Server charset(Charset charset) {
+    this.charset = charset;
+    return getThis();
+  }
+
+  public Object errorHandler() {
+    return errorHandler;
+  }
+
+  public Server ERROR(ErrorHandler errorHandler) {
+    this.errorHandler = errorHandler;
+    return getThis();
+  }
+
+  public Server ERROR(Class<? extends ErrorHandler> errorHandler) {
+    this.errorHandler = errorHandler;
+    return getThis();
   }
 
   //----------------------------------------------------------------------------
@@ -89,11 +104,5 @@ public class Server extends Router<HttpMethod, Action> {
 
   public void start(int port, String certChainFile, String keyFile) {
 
-  }
-
-  //----------------------------------------------------------------------------
-
-  public Server CONNECT(String path, ChannelInboundHandler handlerInstance) {
-    return pattern(HttpMethod.CONNECT, path, handlerInstance);
   }
 }

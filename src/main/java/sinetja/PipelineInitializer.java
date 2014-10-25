@@ -6,13 +6,16 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.router.BadClientSilencer;
 
 class PipelineInitializer extends ChannelInitializer<SocketChannel> {
   private final Server            server;
+  private final RouterHandler     routerHandler;
   private final BadClientSilencer badClientSilencer = new BadClientSilencer();
 
   public PipelineInitializer(Server server) {
-    this.server = server;
+    this.server        = server;
+    this.routerHandler = new RouterHandler(server);
   }
 
   public void initChannel(SocketChannel ch) {
@@ -20,7 +23,7 @@ class PipelineInitializer extends ChannelInitializer<SocketChannel> {
     p.addLast(new HttpRequestDecoder());
     p.addLast(new HttpObjectAggregator(server.maxContentLength()));
     p.addLast(new HttpResponseEncoder());
-    p.addLast(server.name(), server);
+    p.addLast(routerHandler);
     p.addLast(badClientSilencer);
   }
 }
