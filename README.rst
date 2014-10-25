@@ -28,6 +28,12 @@ Java 8 provides convenient lambda syntax:
     }
   }
 
+``req`` and ``res`` are
+`FullHttpRequest <http://netty.io/4.0/api/io/netty/handler/codec/http/FullHttpRequest.html>`_
+and
+`FullHttpResponse <http://netty.io/4.0/api/io/netty/handler/codec/http/FullHttpResponse.html>`_
+with several helper methods to let you extract params and respond.
+
 Use with older Java - Style 1 of 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -112,7 +118,10 @@ The route target can be an Action class or an Action instance.
 Reverse routing
 ~~~~~~~~~~~~~~~
 
-TODO
+::
+
+  server.path(IndexAction.class)
+  server.path(HelloAction.class, "name", "World")
 
 Access request params
 ~~~~~~~~~~~~~~~~~~~~~
@@ -130,10 +139,19 @@ TODO: Write doc in more detail
 Respond
 ~~~~~~~
 
+Respond text/plain:
+
 ::
 
   ChannelFuture respondText(Object  text)
   ChannelFuture respondText(ByteBuf buf)
+
+Respond text/html:
+
+::
+
+  ChannelFuture respondHtml(Object  text)
+  ChannelFuture respondHtml(ByteBuf buf)
 
 Log
 ~~~
