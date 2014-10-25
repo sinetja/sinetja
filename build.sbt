@@ -2,7 +2,7 @@ organization := "tv.cntt"
 
 name         := "sinetja"
 
-version      := "1.0-SNAPSHOT"
+version      := "1.1-SNAPSHOT"
 
 //------------------------------------------------------------------------------
 
@@ -27,4 +27,6 @@ libraryDependencies += "io.netty" % "netty-all" % "4.0.23.Final"
 // Netty speed can be boosted by Javassist
 libraryDependencies += "org.javassist" % "javassist" % "3.18.2-GA"
 
-libraryDependencies += "tv.cntt" % "netty-router" % "1.7"
+libraryDependencies += "tv.cntt" % "netty-router" % "1.8"
+
+libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.2" % "test"

@@ -1,8 +1,16 @@
 package sinetja
 
+import scala.xml.Xhtml
+
 class IndexAction extends Action {
   def run(req: Request, res: Response) {
-    res.respondText("Hello Sinetja")
+    val href = req.server().path(classOf[HelloAction], "name", "World")
+    res.respondHtml(Xhtml.toXhtml(
+      <body>
+        <p>Hello Sinetja</p>
+        <p><a href={href}>Link to another action</a></p>
+      </body>
+    ))
   }
 }
 

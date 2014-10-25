@@ -249,7 +249,7 @@ Use with Maven
   <dependency>
     <groupId>tv.cntt</groupId>
     <artifactId>sinetja</artifactId>
-    <version>1.0</version>
+    <version>1.1</version>
   </dependency>
 
 Together with Netty, Sinetja also adds `Javassist <http://javassist.org/>`_ as

@@ -54,10 +54,20 @@ public class Response implements FullHttpResponse {
 
   protected ChannelFuture respondText(ByteBuf buf) {
     HttpHeaders headers = response.headers();
-    if (headers.contains(HttpHeaders.Names.CONTENT_TYPE)) headers.set(HttpHeaders.Names.CONTENT_TYPE, "text/plain");
+    if (!headers.contains(HttpHeaders.Names.CONTENT_TYPE)) headers.set(HttpHeaders.Names.CONTENT_TYPE, "text/plain");
     response.content().writeBytes(buf);
     headers.set(HttpHeaders.Names.CONTENT_LENGTH, response.content().readableBytes());
     return KeepAliveWrite.flush(channel, routed.request(), response);
+  }
+
+  protected ChannelFuture respondHtml(Object text) {
+    response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "text/html");
+    return respondText(text);
+  }
+
+  protected ChannelFuture respondHtml(ByteBuf buf) {
+    response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "text/html");
+    return respondText(buf);
   }
 
   //----------------------------------------------------------------------------
