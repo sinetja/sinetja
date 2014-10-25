@@ -207,7 +207,7 @@ public class Request implements FullHttpRequest {
 
   @Override
   public int refCnt() {
-    return refCnt();
+    return request.refCnt();
   }
 
   @Override
