@@ -2,6 +2,11 @@ Sinetja = Sintra + Netty + Java
 
 You can use Sinetja with Java 5+.
 
+Javadoc:
+
+* `Sinetja <http://sinetja.github.io/sinetja>`_
+* `Netty <http://netty.io/4.0/api/io/netty/handler/codec/http/package-summary.html>`_
+
 Use with Java 8 - Lambda style
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
