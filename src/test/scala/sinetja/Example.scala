@@ -38,6 +38,7 @@ object Example {
       .GET("/",            classOf[IndexAction])
       .GET("/hello/:name", classOf[HelloAction])
       .NOT_FOUND(classOf[NotFoundAction])
+      .jdkSsl()
       .start(8000)
   }
 }
