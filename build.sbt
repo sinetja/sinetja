@@ -27,6 +27,6 @@ libraryDependencies += "io.netty" % "netty-all" % "4.0.23.Final"
 // Netty speed can be boosted by Javassist
 libraryDependencies += "org.javassist" % "javassist" % "3.18.2-GA"
 
-libraryDependencies += "tv.cntt" % "netty-router" % "1.9"
+libraryDependencies += "tv.cntt" % "netty-router" % "1.10"
 
 libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.2" % "test"

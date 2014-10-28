@@ -38,7 +38,7 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
       final Action action = (Action) routed.instanceFromTarget();
       action.run(request, response);
     } catch (Exception e1) {
-      ErrorHandler errorHandler = (ErrorHandler) Routed.instanceFromTarget(server.errorHandler());
+      ErrorHandler errorHandler = (ErrorHandler) Routed.instanceFromTarget(server.error());
       if (errorHandler == null) {
         handleError(request, response, e1);
       } else {

@@ -37,7 +37,7 @@ public class Server extends DualMethodRouter<Action, Server> {
   /** Default: UTF-8. */
   private Charset charset = CharsetUtil.UTF_8;
 
-  private Object errorHandler;
+  private Object error;
 
   //----------------------------------------------------------------------------
 
@@ -130,17 +130,17 @@ public class Server extends DualMethodRouter<Action, Server> {
 
   //----------------------------------------------------------------------------
 
-  public Object errorHandler() {
-    return errorHandler;
+  public Object error() {
+    return error;
   }
 
-  public Server ERROR(ErrorHandler errorHandler) {
-    this.errorHandler = errorHandler;
+  public Server error(ErrorHandler error) {
+    this.error = error;
     return getThis();
   }
 
-  public Server ERROR(Class<? extends ErrorHandler> errorHandler) {
-    this.errorHandler = errorHandler;
+  public Server error(Class<? extends ErrorHandler> error) {
+    this.error = error;
     return getThis();
   }
 

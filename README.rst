@@ -182,7 +182,7 @@ Java 8 style:
 
 ::
 
-  server.NOT_FOUND((req, res) ->
+  server.notFound((req, res) ->
     String uri = req.getUri();
     Log.info("User tried to access nonexistant path: {}", uri);
     res.respondText("Not Found: " + uri);
@@ -192,7 +192,7 @@ Older Java style:
 
 ::
 
-  server.NOT_FOUND(new Action() {
+  server.notFound(new Action() {
     public void run(Request req, Response res) {
       String uri = req.getUri();
       Log.info("User tried to access nonexistant path: {}", uri);
@@ -212,7 +212,7 @@ Class style:
     }
   }
 
-  server.NOT_FOUND(NotFoundAction.class);
+  server.notFound(NotFoundAction.class);
 
 500 Internal Server Error
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -227,7 +227,7 @@ Java 8 style:
 
 ::
 
-  server.ERROR((req, res, e) ->
+  server.error((req, res, e) ->
     String uri = req.getUri();
     Log.error("Error when user tried to access path: {}", e);
     res.respondText("Internal Server Error: " + uri);
@@ -237,7 +237,7 @@ Older Java style:
 
 ::
 
-  server.ERROR(new Action() {
+  server.error(new Action() {
     public void run(Request req, Response res) {
       String uri = req.getUri();
       Log.error("Error when user tried to access path: " + uri, e);
@@ -257,7 +257,7 @@ Class style:
     }
   }
 
-  server.ERROR(ErrorHandler.class);
+  server.error(ErrorHandler.class);
 
 HTTPS
 ~~~~~
