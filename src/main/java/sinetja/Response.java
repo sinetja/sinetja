@@ -34,17 +34,17 @@ public class Response implements FullHttpResponse {
     );
   }
 
-  protected void respondMissingParam(MissingParam e) {
+  public void respondMissingParam(MissingParam e) {
     respondText("Missing param: " + e.param());
   }
 
-  protected void respondServerError(Exception e) {
+  public void respondServerError(Exception e) {
     respondText(INTERNAL_SERVER_ERROR);
   }
 
   //----------------------------------------------------------------------------
 
-  protected ChannelFuture respondText(Object text) {
+  public ChannelFuture respondText(Object text) {
     byte[]        bytes = text.toString().getBytes(server.charset());
     ByteBuf       buf   = Unpooled.copiedBuffer(bytes);
     ChannelFuture ret   = respondText(buf);
@@ -52,7 +52,7 @@ public class Response implements FullHttpResponse {
     return ret;
   }
 
-  protected ChannelFuture respondText(ByteBuf buf) {
+  public ChannelFuture respondText(ByteBuf buf) {
     HttpHeaders headers = response.headers();
     if (!headers.contains(HttpHeaders.Names.CONTENT_TYPE)) headers.set(HttpHeaders.Names.CONTENT_TYPE, "text/plain");
     response.content().writeBytes(buf);
@@ -60,12 +60,12 @@ public class Response implements FullHttpResponse {
     return KeepAliveWrite.flush(channel, routed.request(), response);
   }
 
-  protected ChannelFuture respondHtml(Object text) {
+  public ChannelFuture respondHtml(Object text) {
     response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "text/html");
     return respondText(text);
   }
 
-  protected ChannelFuture respondHtml(ByteBuf buf) {
+  public ChannelFuture respondHtml(ByteBuf buf) {
     response.headers().set(HttpHeaders.Names.CONTENT_TYPE, "text/html");
     return respondText(buf);
   }
