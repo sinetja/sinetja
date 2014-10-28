@@ -35,10 +35,8 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
     });
 
     try {
-      if (server.before() != null) {
-        final Action before = (Action) Routed.instanceFromTarget(server.before());
-        before.run(request, response);
-      }
+      final Action before = (Action) Routed.instanceFromTarget(server.before());
+      if (before != null) before.run(request, response);
 
       if (!response.responded()) {
         final Action action = (Action) routed.instanceFromTarget();
