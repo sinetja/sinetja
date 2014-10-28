@@ -8,7 +8,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.router.DualAbstractHandler;
 import io.netty.handler.codec.http.router.Routed;
 
-public class RouterHandler extends DualAbstractHandler<Server> {
+public class RouterHandler extends DualAbstractHandler<Action, Server> {
   private final Server server;
 
   public RouterHandler(Server server) {
@@ -17,14 +17,11 @@ public class RouterHandler extends DualAbstractHandler<Server> {
   }
 
   @Override
-  protected void routed(final ChannelHandlerContext ctx, final Routed routed, Object target) throws Exception {
+  protected void routed(final ChannelHandlerContext ctx, final Routed routed) throws Exception {
     // Log time taken to process the request
     final long beginNano = System.nanoTime();
 
-    final Action action = (Action) target;
-
-    final Channel channel = ctx.channel();
-
+    final Channel  channel  = ctx.channel();
     final Request  request  = new Request (server, channel, routed);
     final Response response = new Response(server, channel, routed);
 
@@ -38,17 +35,10 @@ public class RouterHandler extends DualAbstractHandler<Server> {
     });
 
     try {
+      final Action action = (Action) routed.instanceFromTarget();
       action.run(request, response);
     } catch (Exception e1) {
-      ErrorHandler errorHandler  = null;
-      Object       objectOrClass = server.errorHandler();
-      if (objectOrClass instanceof Class) {
-        Class<?> klass = (Class<?>) objectOrClass;
-        errorHandler = (ErrorHandler) klass.newInstance();
-      } else {
-        errorHandler = (ErrorHandler) objectOrClass;
-      }
-
+      ErrorHandler errorHandler = (ErrorHandler) Routed.instanceFromTarget(server.errorHandler());
       if (errorHandler == null) {
         handleError(request, response, e1);
       } else {

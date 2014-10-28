@@ -1,6 +1,6 @@
 package sinetja;
 
-import io.netty.handler.codec.http.router.MethodRouter;
+import io.netty.handler.codec.http.router.DualMethodRouter;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslProvider;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
@@ -18,7 +18,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.CharsetUtil;
 
-public class Server extends MethodRouter<Object, Server> {
+public class Server extends DualMethodRouter<Action, Server> {
   @Override protected Server getThis() { return this; }
 
   //----------------------------------------------------------------------------
