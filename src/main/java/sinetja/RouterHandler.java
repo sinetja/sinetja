@@ -39,10 +39,12 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
       if (before != null) before.run(request, response);
 
       if (!response.responded()) {
+        // After filter is run at Response#respond
         final Action action = (Action) routed.instanceFromTarget();
         action.run(request, response);
 
-        // After filter is run at Response#respond
+        // If this is async, pause reading and resume at Response#respond
+        if (!response.responded()) NoRealPipelining.pauseReading(channel);
       }
     } catch (Exception e1) {
       ErrorHandler errorHandler = (ErrorHandler) Routed.instanceFromTarget(server.error());
@@ -59,14 +61,15 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
     }
 
     // Access log; the action can be async
-    final long endNano = System.nanoTime();
-    final long dt      = endNano - beginNano;
+    final long   endNano               = System.nanoTime();
+    final long   dt                    = endNano - beginNano;
+    final Object asyncOrResponseStatus = response.responded() ? response.getStatus() : "async";
     if (dt >= 1000000L) {
-      Log.info("[{}] {} {} - {} [ms]", request.remoteIp(), request.getMethod(), request.getUri(), dt / 1000000L);
+      Log.info("[{}] {} {} - {} {} [ms]", request.remoteIp(), request.getMethod(), request.getUri(), asyncOrResponseStatus, dt / 1000000L);
     } else if (dt >= 1000) {
-      Log.info("[{}] {} {} - {} [us]", request.remoteIp(), request.getMethod(), request.getUri(), dt / 1000);
+      Log.info("[{}] {} {} - {} {} [us]", request.remoteIp(), request.getMethod(), request.getUri(), asyncOrResponseStatus, dt / 1000);
     } else {
-      Log.info("[{}] {} {} - {} [ns]", request.remoteIp(), request.getMethod(), request.getUri(), dt);
+      Log.info("[{}] {} {} - {} {} [ns]", request.remoteIp(), request.getMethod(), request.getUri(), asyncOrResponseStatus, dt);
     }
   }
 
