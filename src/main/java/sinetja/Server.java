@@ -37,6 +37,10 @@ public class Server extends DualMethodRouter<Action, Server> {
   /** Default: UTF-8. */
   private Charset charset = CharsetUtil.UTF_8;
 
+  private Object before;
+
+  private Object after;
+
   private Object error;
 
   //----------------------------------------------------------------------------
@@ -125,6 +129,36 @@ public class Server extends DualMethodRouter<Action, Server> {
 
   public Server charset(Charset charset) {
     this.charset = charset;
+    return getThis();
+  }
+
+  //----------------------------------------------------------------------------
+
+  public Object before() {
+    return before;
+  }
+
+  public Server before(Action before) {
+    this.before = before;
+    return getThis();
+  }
+
+  public Server before(Class<? extends Action> before) {
+    this.before = before;
+    return getThis();
+  }
+
+  public Object after() {
+    return after;
+  }
+
+  public Server after(Action after) {
+    this.after = after;
+    return getThis();
+  }
+
+  public Server after(Class<? extends Action> after) {
+    this.after = after;
     return getThis();
   }
 

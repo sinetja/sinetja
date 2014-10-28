@@ -34,6 +34,22 @@ public class Response implements FullHttpResponse {
     );
   }
 
+  //----------------------------------------------------------------------------
+
+  public boolean responded() {
+    // FIXME
+    return false;
+  }
+
+  public ChannelFuture respond() {
+    // FIXME
+
+    // Run after filter here
+    return null;
+  }
+
+  //----------------------------------------------------------------------------
+
   public void respondMissingParam(MissingParam e) {
     respondText("Missing param: " + e.param());
   }

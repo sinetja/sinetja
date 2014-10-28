@@ -35,8 +35,17 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
     });
 
     try {
-      final Action action = (Action) routed.instanceFromTarget();
-      action.run(request, response);
+      if (server.before() != null) {
+        final Action before = (Action) Routed.instanceFromTarget(server.before());
+        before.run(request, response);
+      }
+
+      if (!response.responded()) {
+        final Action action = (Action) routed.instanceFromTarget();
+        action.run(request, response);
+
+        // After filter is run at Response#respond
+      }
     } catch (Exception e1) {
       ErrorHandler errorHandler = (ErrorHandler) Routed.instanceFromTarget(server.error());
       if (errorHandler == null) {

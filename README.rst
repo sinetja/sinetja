@@ -158,6 +158,47 @@ Respond text/html:
   ChannelFuture respondHtml(Object  text)
   ChannelFuture respondHtml(ByteBuf buf)
 
+Before filter
+~~~~~~~~~~~~~
+
+Java 8 style:
+
+::
+
+  server.before((req, res) -> {
+    ...
+  });
+
+If the filter responds something, the main action will not be called.
+
+Older Java style:
+
+::
+
+  server.before(new Action() {
+    public void run(Request req, Response res) {
+      ...
+    }
+  );
+
+Class style:
+
+::
+
+  public class BeforeFilter extends Action {
+    public void run(Request req, Response res) {
+      ...
+    }
+  }
+
+  server.before(BeforeFilter.class);
+
+After filter
+~~~~~~~~~~~~
+
+Similar to before filter.
+It's run after the main action, but before the response is returned to the client.
+
 Log
 ~~~
 
@@ -204,15 +245,15 @@ Class style:
 
 ::
 
-  public class NotFoundAction extends Action {
-    public void run() {
+  public class NotFound extends Action {
+    public void run(Request req, Response res) {
       String uri = request.getUri();
       Log.info("User tried to access nonexistant path: {}", uri);
       res.respondText("Not Found: " + uri);
     }
   }
 
-  server.notFound(NotFoundAction.class);
+  server.notFound(NotFound.class);
 
 500 Internal Server Error
 ~~~~~~~~~~~~~~~~~~~~~~~~~
