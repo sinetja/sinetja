@@ -20,14 +20,14 @@ Java 8 provides convenient lambda syntax:
     public static void main(String[] args) {
       new Server()
 
-      .GET("/", (req, res) ->
+      .GET("/", (req, res) -> {
         res.respondText("Hello world");
-      )
+      })
 
-      .GET("/hello/:name", (req, res) ->
+      .GET("/hello/:name", (req, res) -> {
         String name = req.param("name");
         res.respondText("Hello " + name);
-      )
+      })
 
       .start(8000);
     }
@@ -56,17 +56,17 @@ This style is just a verbose version of Java 8.
       new Server()
 
       .GET("/", new Action() {
-        public void run(Request req, Response res) {
+        public void run(Request req, Response res) throws Exception {
           res.respondText("Hello world");
         }
-      )
+      })
 
       .GET("/hello/:name", new Action() {
-        public void run(Request req, Response res) {
+        public void run(Request req, Response res) throws Exception {
           String name = req.param("name");
           res.respondText("Hello " + name);
         }
-      )
+      })
 
       .start(8000);
     }
