@@ -6,6 +6,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.netty.handler.codec.http.cors.CorsHandler;
 import io.netty.handler.codec.http.router.BadClientSilencer;
 import io.netty.handler.ssl.SslContext;
 
@@ -29,6 +30,9 @@ class PipelineInitializer extends ChannelInitializer<SocketChannel> {
     p.addLast(new HttpRequestDecoder());
     p.addLast(new HttpObjectAggregator(server.maxContentLength()));
     p.addLast(new HttpResponseEncoder());
+
+    if (server.cors() != null) p.addLast(new CorsHandler(server.cors()));
+
     p.addLast(routerHandler);
     p.addLast(badClientSilencer);
   }

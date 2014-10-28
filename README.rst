@@ -342,6 +342,19 @@ If you want to set it directly:
 
    sslContext(SslContext sslContext)
 
+CORS
+~~~~
+
+To tell the server to handle `CORS <http://en.wikipedia.org/wiki/Cross-origin_resource_sharing>`_,
+set `CorsConfig <http://netty.io/4.0/api/io/netty/handler/codec/http/cors/CorsConfig.html>`_:
+
+::
+
+  import io.netty.handler.codec.http.cors.CorsConfig;
+
+  CorsConfig config = CorsConfig.withAnyOrigin().build();
+  server.cors(config);
+
 Use with Maven
 ~~~~~~~~~~~~~~
 

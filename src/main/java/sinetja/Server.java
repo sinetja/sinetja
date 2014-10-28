@@ -1,5 +1,6 @@
 package sinetja;
 
+import io.netty.handler.codec.http.cors.CorsConfig;
 import io.netty.handler.codec.http.router.DualMethodRouter;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslProvider;
@@ -36,6 +37,8 @@ public class Server extends DualMethodRouter<Action, Server> {
 
   /** Default: UTF-8. */
   private Charset charset = CharsetUtil.UTF_8;
+
+  private CorsConfig cors;
 
   private Object before;
 
@@ -129,6 +132,17 @@ public class Server extends DualMethodRouter<Action, Server> {
 
   public Server charset(Charset charset) {
     this.charset = charset;
+    return getThis();
+  }
+
+  //----------------------------------------------------------------------------
+
+  public CorsConfig cors() {
+    return cors;
+  }
+
+  public Server cors(CorsConfig cors) {
+    this.cors = cors;
     return getThis();
   }
 
