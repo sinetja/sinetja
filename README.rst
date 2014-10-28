@@ -198,6 +198,7 @@ After filter
 
 Similar to before filter.
 It's run after the main action, but before the response is returned to the client.
+For example, if you want to add a header to all responses, you can do it here.
 
 Log
 ~~~
@@ -223,11 +224,11 @@ Java 8 style:
 
 ::
 
-  server.notFound((req, res) ->
+  server.notFound((req, res) -> {
     String uri = req.getUri();
     Log.info("User tried to access nonexistant path: {}", uri);
     res.respondText("Not Found: " + uri);
-  );
+  });
 
 Older Java style:
 
@@ -268,18 +269,18 @@ Java 8 style:
 
 ::
 
-  server.error((req, res, e) ->
+  server.error((req, res, e) -> {
     String uri = req.getUri();
     Log.error("Error when user tried to access path: {}", e);
     res.respondText("Internal Server Error: " + uri);
-  );
+  });
 
 Older Java style:
 
 ::
 
-  server.error(new Action() {
-    public void run(Request req, Response res) {
+  server.error(new ErrorHandler() {
+    public void run(Request req, Response res, Exception e) {
       String uri = req.getUri();
       Log.error("Error when user tried to access path: " + uri, e);
       res.respondText("Internal Server Error: " + uri);
@@ -291,7 +292,7 @@ Class style:
 ::
 
   public class ErrorHandler extends ErrorHandler {
-    public void run() {
+    public void run(Request req, Response res, Exception e) {
       String uri = req.getUri();
       Log.error("Error when user tried to access path: " + uri, e);
       res.respondText("Internal Server Error: " + uri);
