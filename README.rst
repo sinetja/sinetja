@@ -16,7 +16,7 @@ Java 8 provides convenient lambda syntax:
 
   import sinetja.Server;
 
-  public App {
+  public class App {
     public static void main(String[] args) {
       new Server()
 
@@ -51,7 +51,7 @@ This style is just a verbose version of Java 8.
   import sinetja.Request;
   import sinetja.Response;
 
-  public App {
+  public class App {
     public static void main(String[] args) {
       new Server()
 
@@ -101,7 +101,7 @@ web pages with URL links among them.
     }
   }
 
-  public App {
+  public class App {
     public static void main(String[] args) {
       new Server()
         .GET("/",            IndexAction.class)
@@ -203,13 +203,21 @@ For example, if you want to add a header to all responses, you can do it here.
 Log
 ~~~
 
+::
+
+  import sinetja.Log;
+  Log.info("Some info");
+
 Sinetja uses `SLF4J <www.slf4j.org>`_.
 Please add an implementation like `Logback <http://logback.qos.ch/>`_ to your project.
 
 ::
 
-  import sinetja.Log;
-  Log.info("Some info");
+  <dependency>
+    <groupId>ch.qos.logback</groupId>
+    <artifactId>logback-classic</artifactId>
+    <version>1.1.2</version>
+  </dependency>
 
 404 Not Found
 ~~~~~~~~~~~~~

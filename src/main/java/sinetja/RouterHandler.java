@@ -23,7 +23,7 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
 
     final Channel  channel  = ctx.channel();
     final Request  request  = new Request (server, channel, routed);
-    final Response response = new Response(server, channel, routed);
+    final Response response = new Response(server, channel, routed, request);
 
     // Release request and response when the connection is closed, just in case
     channel.closeFuture().addListener(new ChannelFutureListener() {
@@ -38,13 +38,13 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
       final Action before = (Action) Routed.instanceFromTarget(server.before());
       if (before != null) before.run(request, response);
 
-      if (!response.responded()) {
+      if (!response.doneResponding()) {
         // After filter is run at Response#respond
         final Action action = (Action) routed.instanceFromTarget();
         action.run(request, response);
 
         // If this is async, pause reading and resume at Response#respond
-        if (!response.responded()) NoRealPipelining.pauseReading(channel);
+        if (!response.doneResponding()) NoRealPipelining.pauseReading(channel);
       }
     } catch (Exception e1) {
       ErrorHandler errorHandler = (ErrorHandler) Routed.instanceFromTarget(server.error());
@@ -63,7 +63,7 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
     // Access log; the action can be async
     final long   endNano               = System.nanoTime();
     final long   dt                    = endNano - beginNano;
-    final Object asyncOrResponseStatus = response.responded() ? response.getStatus() : "async";
+    final Object asyncOrResponseStatus = response.doneResponding() ? response.getStatus() : "async";
     if (dt >= 1000000L) {
       Log.info("[{}] {} {} - {} {} [ms]", request.remoteIp(), request.getMethod(), request.getUri(), asyncOrResponseStatus, dt / 1000000L);
     } else if (dt >= 1000) {
@@ -73,14 +73,15 @@ public class RouterHandler extends DualAbstractHandler<Action, Server> {
     }
   }
 
-  protected void handleError(Request request, Response response, Exception e) {
+  protected void handleError(Request request, Response response, Exception e) throws Exception {
     if (e instanceof MissingParam) {
+      MissingParam mp = (MissingParam) e;
       response.setStatus(HttpResponseStatus.BAD_REQUEST);
-      response.respondMissingParam((MissingParam) e);
+      response.respondText("Missing param: " + mp.param());
     } else {
       Log.error("Server error: {}\nWhen processing request: {}", e, request);
       response.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
-      response.respondServerError(e);
+      response.respondText("Internal Server Error");
     }
   }
 }

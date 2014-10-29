@@ -18,7 +18,23 @@ class PipelineInitializer extends ChannelInitializer<SocketChannel> {
   public PipelineInitializer(Server server) {
     this.server            = server;
     this.routerHandler     = new RouterHandler(server);
-    this.badClientSilencer = new BadClientSilencer();
+    this.badClientSilencer = new BadClientSilencer() {
+      @Override
+      protected void onUnknownMessage(Object msg) {
+        if (msg != io.netty.handler.codec.http.LastHttpContent.EMPTY_LAST_CONTENT)
+          Log.trace("Unknown msg: " + msg);
+      }
+
+      @Override
+      protected void onBadClient(Throwable e) {
+        Log.trace("Caught exception (maybe client is bad)", e);
+      }
+
+      @Override
+      protected void onBadServer(Throwable e) {
+        Log.error("Caught exception (maybe server is bad)", e);
+      }
+    };
   }
 
   public void initChannel(SocketChannel ch) {
