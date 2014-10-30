@@ -18,6 +18,7 @@ import io.netty.handler.codec.http.router.Routed;
 import static io.netty.handler.codec.http.HttpHeaders.Names.*;
 
 public class Response implements FullHttpResponse {
+  // Creating ObjectMapper is time consuming but once created it's thread-safe and fast
   public static final ObjectMapper jsonObjectMapper = new ObjectMapper();
 
   private final Server  server;
