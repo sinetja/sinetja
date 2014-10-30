@@ -212,7 +212,7 @@ public class Server extends DualMethodRouter<Action, Server> {
       if (sslContext == null)
         Log.info("HTTP server started: http://127.0.0.1:" + port + '/');
       else
-        Log.info("HTTP server started: https://127.0.0.1:" + port + '/');
+        Log.info("HTTPS server started: https://127.0.0.1:" + port + '/');
 
       ch.closeFuture().sync();
     } catch (InterruptedException e) {
