@@ -19,8 +19,8 @@ javacOptions in (Compile, doc) := Seq("-source", "1.5")
 
 //------------------------------------------------------------------------------
 
-// Projects using Sinetja must provide a concrete implementation of SLF4J (Logback etc.)
-libraryDependencies += "org.slf4s" %% "slf4s-api" % "1.7.7"
+// Projects using Sinetja must provide an implementation of SLF4J (Logback etc.)
+libraryDependencies += "org.slf4j" % "slf4j-api" % "1.7.7" % "provided"
 
 libraryDependencies += "io.netty" % "netty-all" % "4.0.24.Final"
 
