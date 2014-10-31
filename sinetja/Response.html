@@ -275,14 +275,14 @@ implements io.netty.handler.codec.http.FullHttpResponse</pre>
 <tr id="i20" class="altColor">
 <td class="colFirst"><code>io.netty.channel.ChannelFuture</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../sinetja/Response.html#respondJson-java.lang.Object-">respondJson</a></span>(java.lang.Object&nbsp;ref)</code>
-<div class="block">Converts the given Scala object to JSON object, and responds it.</div>
+<div class="block">Converts the given Java object to JSON object using Jackson ObjectMapper, and responds it.</div>
 </td>
 </tr>
 <tr id="i21" class="rowColor">
 <td class="colFirst"><code>io.netty.channel.ChannelFuture</code></td>
 <td class="colLast"><code><span class="memberNameLink"><a href="../sinetja/Response.html#respondJsonP-java.lang.Object-java.lang.String-">respondJsonP</a></span>(java.lang.Object&nbsp;ref,
             java.lang.String&nbsp;function)</code>
-<div class="block">Converts the given Scala object to JSON object, wraps it with the given
+<div class="block">Converts the given Java object to JSON object using Jackson ObjectMapper, wraps it with the given
  JavaScript function name, and responds.</div>
 </td>
 </tr>
@@ -552,7 +552,7 @@ implements io.netty.handler.codec.http.FullHttpResponse</pre>
 <h4>respondJson</h4>
 <pre>public&nbsp;io.netty.channel.ChannelFuture&nbsp;respondJson(java.lang.Object&nbsp;ref)
                                            throws java.lang.Exception</pre>
-<div class="block">Converts the given Scala object to JSON object, and responds it.
+<div class="block">Converts the given Java object to JSON object using Jackson ObjectMapper, and responds it.
  If you just want to respond a text with "application/json" as content type,
  use respondJsonText(text).
 
@@ -574,7 +574,7 @@ implements io.netty.handler.codec.http.FullHttpResponse</pre>
 <pre>public&nbsp;io.netty.channel.ChannelFuture&nbsp;respondJsonP(java.lang.Object&nbsp;ref,
                                                    java.lang.String&nbsp;function)
                                             throws java.lang.Exception</pre>
-<div class="block">Converts the given Scala object to JSON object, wraps it with the given
+<div class="block">Converts the given Java object to JSON object using Jackson ObjectMapper, wraps it with the given
  JavaScript function name, and responds. If you already have a JSON text,
  thus no conversion is needed, use respondJsonPText.
 
