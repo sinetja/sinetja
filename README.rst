@@ -50,8 +50,8 @@ New project skeleton:
 
 `Discussion mailing list (Google group) <https://groups.google.com/group/sinetja>`_
 
-Use with older Java - Style 1 of 2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use with older Java
+~~~~~~~~~~~~~~~~~~~
 
 This style is just a verbose version of Java 8.
 
@@ -83,14 +83,14 @@ This style is just a verbose version of Java 8.
     }
   }
 
-Use with older Java - Style 2 of 2
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Use Action classes
+~~~~~~~~~~~~~~~~~~
 
 In this style, you route by classes, instead of instances as above.
-You can certainly use this style with Java 8.
+You can certainly use this style with any Java version.
 
-This style allows you to create reverse routing (see below), suitable for creating
-web pages with URL links among them.
+This style allows you to create reverse routing (see below), suitable for
+creating web pages with URL links among them.
 
 ::
 
