@@ -14,6 +14,8 @@ New project skeleton:
 * `Sinetja-Skeleton <https://github.com/sinetja/sinetja-skeleton>`_:
   If you use older Java.
 
+`Discussion mailing list (Google group) <https://groups.google.com/group/sinetja>`_
+
 Use with Java 8 - Lambda style
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
