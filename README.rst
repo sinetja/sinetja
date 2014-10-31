@@ -2,8 +2,8 @@ Sinetja = Sintra + Netty + Java
 
 You can use Sinetja with Java 5+.
 
-Use with Java 8 - Lambda style
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Style 1: Use with Java 8 - Lambda style
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Java 8 provides convenient lambda syntax:
 
@@ -50,8 +50,8 @@ New project skeleton:
 
 `Discussion mailing list (Google group) <https://groups.google.com/group/sinetja>`_
 
-Use with older Java
-~~~~~~~~~~~~~~~~~~~
+Style 2: Use with older Java
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This style is just a verbose version of Java 8.
 
@@ -83,8 +83,8 @@ This style is just a verbose version of Java 8.
     }
   }
 
-Use Action classes
-~~~~~~~~~~~~~~~~~~
+Style 3: Use Action classes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In this style, you route by classes, instead of instances as above.
 You can certainly use this style with any Java version.
@@ -121,12 +121,13 @@ creating web pages with URL links among them.
     }
   }
 
-Routing
-~~~~~~~
+Request methods
+~~~~~~~~~~~~~~~
 
-Request methods: ``CONNECT``, ``DELETE``, ``GET``, ``HEAD``, ``OPTIONS``,
-``PATCH``, ``POST``, ``PUT``, ``TRACE``, ``ANY``. ``ANY`` means the route will
-match all request methods.
+``CONNECT``, ``DELETE``, ``GET``, ``HEAD``, ``OPTIONS``,
+``PATCH``, ``POST``, ``PUT``, ``TRACE``, ``ANY``
+
+``ANY`` means the route will match all request methods.
 
 If you want to specify that a route should be matched first or last:
 ``GET_FIRST``, ``GET_LAST`` etc.
@@ -250,7 +251,7 @@ Please add an implementation like `Logback <http://logback.qos.ch/>`_ to your pr
 404 Not Found
 ~~~~~~~~~~~~~
 
-If there's no matched action, Sinetjy will automatically respond simple
+If there's no matched action, Sinetja will automatically respond simple
 "Not Found" text for you.
 
 If you want to handle yourself (response status has already been set to 404,
@@ -295,7 +296,7 @@ Class style:
 500 Internal Server Error
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If there's no error handler, Sinetjy will automatically respond simple
+If there's no error handler, Sinetja will automatically respond simple
 "Internal Server Error" text for you.
 
 If you want to handle yourself (response status has already been set to 500,
