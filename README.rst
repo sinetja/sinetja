@@ -10,7 +10,7 @@ Javadoc:
 New project skeleton:
 
 * `Sinetja-Skeleton8 <https://github.com/sinetja/sinetja-skeleton8>`_:
-  If you use Java 8.
+  If you want to use Java 8 with its lambda syntax.
 * `Sinetja-Skeleton <https://github.com/sinetja/sinetja-skeleton>`_:
   If you use older Java.
 
