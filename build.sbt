@@ -30,5 +30,3 @@ libraryDependencies += "org.javassist" % "javassist" % "3.18.2-GA"
 libraryDependencies += "tv.cntt" % "netty-router" % "1.10"
 
 libraryDependencies += "com.fasterxml.jackson.core" % "jackson-databind" % "2.4.3"
-
-libraryDependencies += "org.scala-lang.modules" %% "scala-xml" % "1.0.2" % "test"
