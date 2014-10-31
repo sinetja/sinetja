@@ -7,6 +7,13 @@ Javadoc:
 * `Sinetja <http://sinetja.github.io/sinetja>`_
 * `Netty <http://netty.io/4.0/api/io/netty/handler/codec/http/package-summary.html>`_
 
+New project skeleton:
+
+* `sinetja-skeleton8 <https://github.com/sinetja/sinetja-skeleton8>`_:
+  If you use Java 8.
+* `sinetja-skeleton <https://github.com/sinetja/sinetja-skeleton>`_:
+  If you use older Java.
+
 Use with Java 8 - Lambda style
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
