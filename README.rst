@@ -2,22 +2,6 @@ Sinetja = Sintra + Netty + Java
 
 You can use Sinetja with Java 5+.
 
-Javadoc:
-
-* `Sinetja <http://sinetja.github.io/sinetja>`_
-* `Netty <http://netty.io/4.0/api/io/netty/handler/codec/http/package-summary.html>`_
-
-New project skeleton:
-
-* `Sinetja-Skeleton8 <https://github.com/sinetja/sinetja-skeleton8>`_:
-  If you want to use Java 8 with its lambda syntax.
-* `Sinetja-Skeleton <https://github.com/sinetja/sinetja-skeleton>`_:
-  If you use older Java.
-
-`Discussion mailing list (Google group) <https://groups.google.com/group/sinetja>`_
-
-If you use Scala, please try `Xitrum <http://xitrum-framework.github.io/>`_.
-
 Use with Java 8 - Lambda style
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -49,6 +33,22 @@ Java 8 provides convenient lambda syntax:
 and
 `FullHttpResponse <http://netty.io/4.0/api/io/netty/handler/codec/http/FullHttpResponse.html>`_
 with several helper methods to let you extract params and respond.
+
+Javadoc:
+
+* `Sinetja <http://sinetja.github.io/sinetja>`_
+* `Netty <http://netty.io/4.0/api/io/netty/handler/codec/http/package-summary.html>`_
+
+New project skeleton:
+
+* `Sinetja-Skeleton8 <https://github.com/sinetja/sinetja-skeleton8>`_:
+  If you want to use Java 8 with its lambda syntax.
+* `Sinetja-Skeleton <https://github.com/sinetja/sinetja-skeleton>`_:
+  If you use older Java.
+* `Sinetja-Scaleton <https://github.com/sinetja/sinetja-scaleton>`_:
+  If you use Scala. Please also try `Xitrum <http://xitrum-framework.github.io/>`_.
+
+`Discussion mailing list (Google group) <https://groups.google.com/group/sinetja>`_
 
 Use with older Java - Style 1 of 2
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
