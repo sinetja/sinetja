@@ -120,12 +120,20 @@ web pages with URL links among them.
 Routing
 ~~~~~~~
 
-Methods: CONNECT, DELETE, GET, HEAD, OPTIONS, PATCH, POST, PUT, TRACE, ANY. ANY
-means the route will match all methods.
+Request methods: ``CONNECT``, ``DELETE``, ``GET``, ``HEAD``, ``OPTIONS``,
+``PATCH``, ``POST``, ``PUT``, ``TRACE``, ``ANY``. ``ANY`` means the route will
+match all request methods.
 
-Order: GET_FIRST, GET_LAST etc.
+If you want to specify that a route should be matched first or last:
+``GET_FIRST``, ``GET_LAST`` etc.
 
-The route target can be an Action class or an Action instance.
+::
+
+  server
+    .GET      ("/articles/:id", ShowAction.class)
+    .GET_FIRST("/articles/new", NewAction.class)
+
+The route target can be an ``Action`` class or an ``Action`` instance.
 
 Reverse routing
 ~~~~~~~~~~~~~~~
@@ -133,7 +141,10 @@ Reverse routing
 ::
 
   server.path(IndexAction.class)
+  // => "/"
+
   server.path(HelloAction.class, "name", "World")
+  // => "/hello/World"
 
 Access request params
 ~~~~~~~~~~~~~~~~~~~~~
@@ -146,24 +157,30 @@ Order of priority: path > body > query
   String       paramo(String name)
   List<String> params(String name)
 
-TODO: Write doc in more detail
+``param`` and ``paramo`` return a single value.
+``params`` returns a collection of values (params can have same name).
+
+If the param is missing:
+
+* ``paramo`` will just returns null.
+* ``param`` will throw ``MissingParam``. By default, Sinetja will respond error
+  400 bad request for you. You want to change that behavior, you can catch that
+  exception in your action, or at the global error handler (see
+  "500 Internal Server Error" section below).
 
 Respond
 ~~~~~~~
 
-Respond text/plain:
-
 ::
 
-  ChannelFuture respondText(Object  text)
-  ChannelFuture respondText(ByteBuf buf)
+  respondText
+  respondHtml
+  respondJson
+  etc.
 
-Respond text/html:
+See `Javadoc <http://sinetja.github.io/sinetja/sinetja/Response.html>`_.
 
-::
-
-  ChannelFuture respondHtml(Object  text)
-  ChannelFuture respondHtml(ByteBuf buf)
+All the methods return `ChannelFuture <http://netty.io/4.0/api/io/netty/channel/ChannelFuture.html>`_.
 
 Before filter
 ~~~~~~~~~~~~~
