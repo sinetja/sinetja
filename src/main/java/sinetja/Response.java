@@ -156,6 +156,8 @@ public class Response implements FullHttpResponse {
       respondHeadersOnlyForFirstChunk();
       return channel.writeAndFlush(new DefaultHttpContent(buf));
     } else {
+      // Pitfall: Content-Length is number of bytes, not characters
+      response.headers().set(CONTENT_LENGTH, buf.readableBytes());
       response.content().writeBytes(buf);
       return respond();
     }
@@ -236,6 +238,8 @@ public class Response implements FullHttpResponse {
     } else {
       if (!response.headers().contains(CONTENT_TYPE))
           response.headers().set(CONTENT_TYPE, "application/octet-stream");
+
+      response.headers().set(CONTENT_LENGTH, byteBuf.readableBytes());
       response.content().writeBytes(byteBuf);
       return respond();
     }
