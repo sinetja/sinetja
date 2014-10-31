@@ -16,6 +16,8 @@ New project skeleton:
 
 `Discussion mailing list (Google group) <https://groups.google.com/group/sinetja>`_
 
+If you use Scala, please try `Xitrum <http://xitrum-framework.github.io/>`_.
+
 Use with Java 8 - Lambda style
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
