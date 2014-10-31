@@ -184,7 +184,8 @@ public class Response implements FullHttpResponse {
   }
 
   /**
-   * Converts the given Scala object to JSON object, and responds it.
+   * Converts the given Java object to JSON object using Jackson ObjectMapper,
+   * and responds it.
    * If you just want to respond a text with "application/json" as content type,
    * use respondJsonText(text).
    *
@@ -198,9 +199,9 @@ public class Response implements FullHttpResponse {
   }
 
   /**
-   * Converts the given Scala object to JSON object, wraps it with the given
-   * JavaScript function name, and responds. If you already have a JSON text,
-   * thus no conversion is needed, use respondJsonPText.
+   * Converts the given Java object to JSON object using Jackson ObjectMapper,
+   * wraps it with the given JavaScript function name, and responds.
+   * If you already have a JSON text, thus no conversion is needed, use respondJsonPText.
    *
    * Content-Type header is set to "application/javascript".
    */
