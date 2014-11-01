@@ -187,6 +187,13 @@ See `Javadoc <http://sinetja.github.io/sinetja/sinetja/Response.html>`_.
 
 All the methods return `ChannelFuture <http://netty.io/4.0/api/io/netty/channel/ChannelFuture.html>`_.
 
+Async
+^^^^^
+
+Thanks to `Netty <http://netty.io/>`_, unlike most Java web frameworks,
+Sinetja is async. You don't have to respond right away as soon as possible.
+You can respond later.
+
 Before filter
 ~~~~~~~~~~~~~
 
