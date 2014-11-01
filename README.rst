@@ -1,4 +1,4 @@
-Sinetja = Sintra + Netty + Java
+Sinetja = Sinatra + Netty + Java
 
 You can use Sinetja with Java 5+.
 
