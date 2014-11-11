@@ -1,6 +1,6 @@
 Sinetja = Sinatra + Netty + Java
 
-You can use Sinetja with Java 5+.
+You can use Sinetja with Java 6+.
 
 Style 1: Use with Java 8 - Lambda style
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
