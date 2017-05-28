@@ -40,18 +40,21 @@ public class NotModified {
      * http://mrcoles.com/blog/cookies-max-age-vs-expires/
      */
     public static void setClientCacheAggressively(HttpHeaders headers) {
-        if (!headers.contains(CACHE_CONTROL))
+        if (!headers.contains(CACHE_CONTROL)) {
             headers.set(CACHE_CONTROL, "public, " + MAX_AGE + "=" + SECS_IN_A_YEAR);
+        }
 
         // CORS:
         // http://sockjs.github.com/sockjs-protocol/sockjs-protocol-0.3.3.html#section-7
-        if (!headers.contains(ACCESS_CONTROL_MAX_AGE))
+        if (!headers.contains(ACCESS_CONTROL_MAX_AGE)) {
             headers.set(ACCESS_CONTROL_MAX_AGE, SECS_IN_A_YEAR);
+        }
 
         // Note that SECS_IN_A_YEAR * 1000 is different from SECS_IN_A_YEAR * 1000L
         // because of integer overflow!
-        if (!headers.contains(EXPIRES))
+        if (!headers.contains(EXPIRES)) {
             headers.set(EXPIRES, formatRfc2822(System.currentTimeMillis() + SECS_IN_A_YEAR * 1000L));
+        }
     }
 
     /**
