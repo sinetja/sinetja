@@ -10,12 +10,14 @@ import io.netty.handler.ssl.util.SelfSignedCertificate;
 import java.io.File;
 import java.nio.charset.Charset;
 import java.security.cert.CertificateException;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.net.ssl.SSLException;
 
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.util.CharsetUtil;
@@ -25,6 +27,9 @@ public class Server extends Router<Action> {
 
     //----------------------------------------------------------------------------
     // Config
+
+    private String host;
+    private int port;
 
     private SslContext sslContext = null;
 
@@ -37,18 +42,24 @@ public class Server extends Router<Action> {
 
     private CorsConfig cors;
 
-    private Instantiator instantiator = new Instantiator();
-
+    private Instantiator instantiator;
     private Object before;
-
     private Object after;
-
-    private Object error = new DefaultErrorHandler();
+    private Object error;
 
     //----------------------------------------------------------------------------
 
-    public Server() {
+    public Server(int port) {
+        this("0.0.0.0", port);
+    }
+
+    public Server(String host, int port) {
+        this.host = host;
+        this.port = port;
+
+        instantiator(new DefaultInstantiator());
         notFound(new DefaultNotFoundHandler());
+        error(new DefaultErrorHandler());
     }
 
     public SslContext sslContext() {
@@ -197,32 +208,57 @@ public class Server extends Router<Action> {
 
     //----------------------------------------------------------------------------
 
-    private final PipelineInitializer pipelineInitializer = new PipelineInitializer(this);
+    private List<EventLoopGroup> eventLoopGroups = new ArrayList<EventLoopGroup>();
 
-    public void start(int port) {
+    public void start() {
+        Log.info(serverName() + " starting...");
+        bootstrap().bind(host, port).awaitUninterruptibly();
+        Log.info(serverName() + " started");
+    }
+
+    /**
+     * Stops the server gracefully.
+     * Do not call in action thread to avoid deadlock (start a new thread or use {@link #stopAtShutdown}).
+     */
+    public void stop() {
+        Log.info(serverName() + " gracefully stopping...");
+        for (EventLoopGroup g : eventLoopGroups) {
+            g.shutdownGracefully().awaitUninterruptibly();
+        }
+        Log.info(serverName() + " gracefully stopped");
+    }
+
+    /**
+     * Registers a JVM shutdown hook that calls {@link #stop} to stop the server gracefully.
+     * After the hook has been registered, you can stop the server by running OS command {@code kill <PID>}.
+     */
+    public void stopAtShutdown() {
+        Runtime.getRuntime().addShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                Server.this.stop();
+            }
+        });
+    }
+
+    private String serverName() {
+        return (sslContext == null)
+                ? "http://" + host+ ":" + port + "/"
+                : "https://" + host + ":" + port + "/";
+    }
+
+    private ServerBootstrap bootstrap() {
         NioEventLoopGroup bossGroup = new NioEventLoopGroup(1);
         NioEventLoopGroup workerGroup = new NioEventLoopGroup();
 
-        try {
-            ServerBootstrap b = new ServerBootstrap();
-            b.group(bossGroup, workerGroup)
-                    .childOption(ChannelOption.TCP_NODELAY, java.lang.Boolean.TRUE)
-                    .childOption(ChannelOption.SO_KEEPALIVE, java.lang.Boolean.TRUE)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(pipelineInitializer);
+        eventLoopGroups.add(bossGroup);
+        eventLoopGroups.add(workerGroup);
 
-            // Bind on all network interfaces
-            Channel ch = b.bind(port).sync().channel();
-
-            if (sslContext == null)
-                Log.info("HTTP server started: http://127.0.0.1:" + port + '/');
-            else
-                Log.info("HTTPS server started: https://127.0.0.1:" + port + '/');
-
-            ch.closeFuture().sync();
-        } catch (InterruptedException e) {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
-        }
+        return new ServerBootstrap()
+                .group(bossGroup, workerGroup)
+                .childOption(ChannelOption.TCP_NODELAY, java.lang.Boolean.TRUE)
+                .childOption(ChannelOption.SO_KEEPALIVE, java.lang.Boolean.TRUE)
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new PipelineInitializer(this));
     }
 }
