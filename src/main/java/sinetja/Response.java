@@ -27,7 +27,6 @@ public class Response implements FullHttpResponse {
     private final Server server;
     private final Channel channel;
     private final Request request;
-    private final RouteResult routeResult;
 
     private final FullHttpResponse response;
 
@@ -36,16 +35,12 @@ public class Response implements FullHttpResponse {
 
     //----------------------------------------------------------------------------
 
-    public Response(Server server, Channel channel, Request request, RouteResult routeResult) {
+    public Response(Server server, Channel channel, Request request) {
         this.server = server;
         this.channel = channel;
         this.request = request;
-        this.routeResult = routeResult;
 
-        response = new DefaultFullHttpResponse(
-                HttpVersion.HTTP_1_1,
-                routeResult == null ? HttpResponseStatus.NOT_FOUND : HttpResponseStatus.OK
-        );
+        response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
     }
 
     public boolean doneResponding() {
@@ -67,12 +62,17 @@ public class Response implements FullHttpResponse {
      */
     private void respondHeadersOnlyForFirstChunk() throws Exception {
         // doneResponding is set to true by respondLastChunk
-        if (doneResponding) throwDoubleResponseError();
+        if (doneResponding) {
+            throwDoubleResponseError();
+        }
 
-        if (nonChunkedResponseOrFirstChunkSent) return;
+        if (nonChunkedResponseOrFirstChunkSent) {
+            return;
+        }
 
-        if (!response.headers().contains(CONTENT_TYPE))
+        if (!response.headers().contains(CONTENT_TYPE)) {
             response.headers().set(CONTENT_TYPE, "application/octet-stream");
+        }
 
         // There should be no CONTENT_LENGTH header
         response.headers().remove(CONTENT_LENGTH);
@@ -102,8 +102,9 @@ public class Response implements FullHttpResponse {
         if (nonChunkedResponseOrFirstChunkSent) throwDoubleResponseError();
 
         // Run after filter
-        final Action after = (Action) server.instantiator().instantiate(server.after());
-        if (after != null) after.run(request, this);
+        if (server.after() != null) {
+            server.after().run(request, this);
+        }
 
         ChannelFuture future = channel.writeAndFlush(response);
 
@@ -138,7 +139,9 @@ public class Response implements FullHttpResponse {
      * set to "text/plain".
      */
     public ChannelFuture respondText(Object text, String fallbackContentType) throws Exception {
-        if (doneResponding) throwDoubleResponseError(text);
+        if (doneResponding) {
+            throwDoubleResponseError(text);
+        }
 
         final String respondedText = text.toString();
 

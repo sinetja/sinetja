@@ -29,7 +29,7 @@ public class Request implements FullHttpRequest {
      */
     private final FullHttpRequest request;
 
-    private final RouteResult<? extends Action> routeResult;
+    private final RouteResult<Action> routeResult;
 
     private final String clientIp;
     private final String remoteIp;
@@ -39,7 +39,7 @@ public class Request implements FullHttpRequest {
      */
     private final Map<String, List<String>> bodyParams;
 
-    public Request(Server server, Channel channel, FullHttpRequest request, RouteResult routeResult) {
+    public Request(Server server, Channel channel, FullHttpRequest request, RouteResult<Action> routeResult) {
         this.server = server;
         this.channel = channel;
         this.request = request;
@@ -83,6 +83,10 @@ public class Request implements FullHttpRequest {
         return remoteIp;
     }
 
+    public String decodedPath() {
+        return routeResult.decodedPath();
+    }
+
     private String getClientIpFromChannel() {
         SocketAddress remoteAddress = channel.remoteAddress();
 
@@ -94,11 +98,8 @@ public class Request implements FullHttpRequest {
     }
 
     private String getRemoteIpFromClientIpOrReverseProxy() {
-        return clientIp;  // FIXME
-    }
-
-    public String decodedPath() {
-        return routeResult.decodedPath();
+        // FIXME
+        return clientIp;
     }
 
     //----------------------------------------------------------------------------
@@ -118,20 +119,26 @@ public class Request implements FullHttpRequest {
 
     /**
      * Order: path, body, query
-     * <p>
-     * When there's no param, this method will throw exception <code>MissingParam</code>.
+     *
+     * <p>When there's no param, this method will throw exception <code>MissingParam</code>.
      * If you don't handle this exception, response "400 Bad Request" will be automatically
      * responded by method respondMissingParam (you can override it if you want).
      * If you want "null" instead, please use method "paramo".
      */
     public String param(String name) throws MissingParam {
         String ret = routeResult.pathParams().get(name);
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
 
-        if (bodyParams != null && bodyParams.containsKey(name)) return bodyParams.get(name).get(0);
+        if (bodyParams != null && bodyParams.containsKey(name)) {
+            return bodyParams.get(name).get(0);
+        }
 
         ret = routeResult.queryParam(name);
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
 
         throw new MissingParam(name);
     }
@@ -143,19 +150,27 @@ public class Request implements FullHttpRequest {
      */
     public String paramo(String name) {
         String ret = routeResult.pathParams().get(name);
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
 
-        if (bodyParams != null && bodyParams.containsKey(name)) return bodyParams.get(name).get(0);
+        if (bodyParams != null && bodyParams.containsKey(name)) {
+            return bodyParams.get(name).get(0);
+        }
 
         ret = routeResult.queryParam(name);
-        if (ret != null) return ret;
+        if (ret != null) {
+            return ret;
+        }
 
         return null;
     }
 
     public List<String> params(String name) {
         List<String> ret = routeResult.params(name);
-        if (bodyParams.containsKey(name)) ret.addAll(bodyParams.get(name));
+        if (bodyParams.containsKey(name)) {
+            ret.addAll(bodyParams.get(name));
+        }
         return ret;
     }
 

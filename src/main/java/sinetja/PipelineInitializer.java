@@ -42,13 +42,17 @@ class PipelineInitializer extends ChannelInitializer<SocketChannel> {
         ChannelPipeline p = ch.pipeline();
 
         SslContext sslContext = server.sslContext();
-        if (sslContext != null) p.addLast(sslContext.newHandler(ch.alloc()));
+        if (sslContext != null) {
+            p.addLast(sslContext.newHandler(ch.alloc()));
+        }
 
         p.addLast(new HttpRequestDecoder());
         p.addLast(new HttpObjectAggregator(server.maxContentLength()));
         p.addLast(new HttpResponseEncoder());
 
-        if (server.cors() != null) p.addLast(new CorsHandler(server.cors()));
+        if (server.cors() != null) {
+            p.addLast(new CorsHandler(server.cors()));
+        }
 
         p.addLast(routerHandler);
         p.addLast(badClientSilencer);

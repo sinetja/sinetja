@@ -42,10 +42,9 @@ public class Server extends Router<Action> {
 
     private CorsConfig cors;
 
-    private Instantiator instantiator;
-    private Object before;
-    private Object after;
-    private Object error;
+    private Action before;
+    private Action after;
+    private ErrorHandler error;
 
     //----------------------------------------------------------------------------
 
@@ -57,7 +56,6 @@ public class Server extends Router<Action> {
         this.host = host;
         this.port = port;
 
-        instantiator(new DefaultInstantiator());
         notFound(new DefaultNotFoundHandler());
         error(new DefaultErrorHandler());
     }
@@ -155,16 +153,7 @@ public class Server extends Router<Action> {
 
     //----------------------------------------------------------------------------
 
-    public Instantiator instantiator() {
-        return instantiator;
-    }
-
-    public Server instantiator(Instantiator instantiator) {
-        this.instantiator = instantiator;
-        return this;
-    }
-
-    public Object before() {
+    public Action before() {
         return before;
     }
 
@@ -173,12 +162,7 @@ public class Server extends Router<Action> {
         return this;
     }
 
-    public Server before(Class<? extends Action> before) {
-        this.before = before;
-        return this;
-    }
-
-    public Object after() {
+    public Action after() {
         return after;
     }
 
@@ -187,21 +171,11 @@ public class Server extends Router<Action> {
         return this;
     }
 
-    public Server after(Class<? extends Action> after) {
-        this.after = after;
-        return this;
-    }
-
-    public Object error() {
+    public ErrorHandler error() {
         return error;
     }
 
     public Server error(ErrorHandler error) {
-        this.error = error;
-        return this;
-    }
-
-    public Server error(Class<? extends ErrorHandler> error) {
         this.error = error;
         return this;
     }

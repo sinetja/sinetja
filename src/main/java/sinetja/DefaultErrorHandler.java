@@ -4,7 +4,7 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 
 public class DefaultErrorHandler implements ErrorHandler {
     @Override
-    public void run(sinetja.Request request, sinetja.Response response, Exception e) throws Exception {
+    public void run(Request request, Response response, Exception e) throws Exception {
         if (e instanceof MissingParam) {
             MissingParam mp = (MissingParam) e;
             response.setStatus(HttpResponseStatus.BAD_REQUEST);

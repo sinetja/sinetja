@@ -11,20 +11,21 @@ Basic usage
   import sinetja.Server;
 
   public class App {
-    public static void main(String[] args) {
-      Server server = new Server(8000);
+      public static void main(String[] args) {
+          Server server = new Server(8000);
 
-      server
-      .GET("/", (req, res) ->
-        res.respondText("Hello world")
-      )
-      .GET("/hello/:name", (req, res) -> {
-        String name = req.param("name");
-        res.respondText("Hello " + name);
-      });
+          server
+              .GET("/", (req, res) ->
+                  res.respondText("Hello World")
+              )
+              .GET("/hello/:name", (req, res) -> {
+                  String name = req.param("name");
+                  res.respondText("Hello " + name);
+              });
 
-      server.start();
-    }
+          server.start();
+          server.stopAtShutdown();
+      }
   }
 
 ``req`` and ``res`` are
@@ -41,52 +42,34 @@ Javadoc:
 Reverse routing
 ~~~~~~~~~~~~~~~
 
-To create reverse routing, you need to define routes using Action classes:
+Use ``server.uri``:
 
 ::
 
   import sinetja.Action;
-  import sinetja.Request;
-  import sinetja.Response;
-  import sinetja.Server;
 
-  public class IndexAction extends Action {
-    public void run(Request req, Response res) {
-      req.respondText("Hello Sinetja");
-    }
-  }
-
-  public class HelloAction extends Action {
-    public void run(Request req, Response res) {
+  Action helloAction = (req, res) -> {
       String name = req.param("name");
-      res.respondText("Hello " + name");
-    }
-  }
+      res.respondText("Hello " + name);
+  };
 
-  public class App {
-    public static void main(String[] args) {
-      Server server = new Server();
+  server
+      .GET("/", (req, res) ->
+          res.respondText(
+              "URI to Hello World action: " +
+              server.uri(helloAction, "name", "World")  // => "/hello/World"
+          )
+      )
+      .GET("/hello/:name", helloAction);
 
-      server
-        .GET("/",            IndexAction.class)
-        .GET("/hello/:name", HelloAction.class);
-
-      server.start(8000);
-    }
-  }
+You can also use Map:
 
 ::
 
-  server.uri(IndexAction.class);
-  // => "/"
-
-  server.uri(HelloAction.class, "name", "World")
-  // => "/hello/World"
-
-  // You can also use Map
   Map<String, String> params = new HashMap<String, String>();
   params.put("name", "World");
-  server.uri(HelloAction.class, params);
+  params.put("foo", "bar");
+  server.uri(helloAction, params);  // => "/hello/World?foo=bar"
 
 Request methods
 ~~~~~~~~~~~~~~~
@@ -100,11 +83,13 @@ You can also use ``ANY``, which means the route will match all request methods.
 If you want to specify that a route should be matched first or last, use
 ``GET_FIRST``, ``GET_LAST`` etc.
 
+In the example below, ``/articles/new`` will be matched before ``/articles/:id``.
+
 ::
 
   server
-    .GET      ("/articles/:id", ShowAction.class)
-    .GET_FIRST("/articles/new", NewAction.class);
+    .GET      ("/articles/:id", ...)
+    .GET_FIRST("/articles/new", ...);
 
 Get request params
 ~~~~~~~~~~~~~~~~~~
@@ -167,32 +152,10 @@ Java 8 style:
 ::
 
   server.before((req, res) -> {
-    ...
+      ...
   });
 
 If the filter responds something, the main action will not be called.
-
-Older Java style:
-
-::
-
-  server.before(new Action() {
-    public void run(Request req, Response res) {
-      ...
-    }
-  );
-
-Class style:
-
-::
-
-  public class BeforeFilter extends Action {
-    public void run(Request req, Response res) {
-      ...
-    }
-  }
-
-  server.before(BeforeFilter.class);
 
 After filter
 ~~~~~~~~~~~~
@@ -223,8 +186,8 @@ You can get a logger like this:
   import org.slf4j.LoggerFactory;
 
   public class MyClass {
-    private static final Logger LOGGER = LoggerFactory.getLogger(MyClass.class);
-    ...
+      private static final Logger LOGGER = LoggerFactory.getLogger(MyClass.class);
+      ...
   }
 
 Or if you don't care about the originality of the logger, simply use ``sinetja.Log``:
@@ -235,7 +198,6 @@ Or if you don't care about the originality of the logger, simply use ``sinetja.L
   sinetja.Log.info("Info msg");
   sinetja.Log.warn("Warning msg");
   sinetja.Log.error("Error msg", error);
-
 
 404 Not Found
 ~~~~~~~~~~~~~
@@ -252,26 +214,11 @@ Java 8 style:
   import io.netty.handler.codec.http.HttpResponseStatus;
 
   server.notFound((req, res) -> {
-    String uri = req.getUri();
-    Log.info("User tried to access nonexistent path: {}", uri);
-    res.setStatus(HttpResponseStatus.NOT_FOUND);
-    res.respondText("Not Found: " + uri);
-  });
-
-Class style:
-
-::
-
-  public class NotFound extends Action {
-    public void run(Request req, Response res) {
-      String uri = request.getUri();
-      Log.info("User tried to access nonexistant path: {}", uri);
+      String uri = req.getUri();
+      Log.info("User tried to access nonexistent path: {}", uri);
       res.setStatus(HttpResponseStatus.NOT_FOUND);
       res.respondText("Not Found: " + uri);
-    }
-  }
-
-  server.notFound(NotFound.class);
+  });
 
 500 Internal Server Error
 ~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -281,31 +228,15 @@ By default, Sinetja will automatically respond simple
 
 If you want to handle yourself:
 
-Java 8 style:
-
 ::
 
   import io.netty.handler.codec.http.HttpResponseStatus;
 
   server.error((req, res, e) -> {
-    Log.error("Error with request: {}", req, e);
-    res.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
-    res.respondText("Internal Server Error");
-  });
-
-Class style:
-
-::
-
-  public class ErrorHandler extends ErrorHandler {
-    public void run(Request req, Response res, Exception e) {
       Log.error("Error with request: {}", req, e);
       res.setStatus(HttpResponseStatus.INTERNAL_SERVER_ERROR);
       res.respondText("Internal Server Error");
-    }
-  }
-
-  server.error(ErrorHandler.class);
+  });
 
 HTTPS
 ~~~~~
